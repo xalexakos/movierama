@@ -1,0 +1,8 @@
+USER_VOTE_LIKE = 'like'
+USER_VOTE_HATE = 'hate'
+USER_VOTE_MAX_LENGTH = 4
+
+USER_VOTE_CHOICES = (
+    (USER_VOTE_LIKE, 'Like'),
+    (USER_VOTE_HATE, 'Hate'),
+)
