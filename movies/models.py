@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import F
 
-from .settings import USER_VOTE_CHOICES, USER_VOTE_MAX_LENGTH
+from .settings import USER_VOTE_CHOICES, USER_VOTE_MAX_LENGTH, USER_VOTE_LIKE
 
 
 class Movie(models.Model):
@@ -19,3 +20,14 @@ class UserVote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     vote = models.CharField(choices=USER_VOTE_CHOICES, max_length=USER_VOTE_MAX_LENGTH)
+
+    class Meta:
+        unique_together = ('user', 'movie')
+
+    def save(self, *args, **kwargs):
+        """ Increment movies likes or hates according to the user's vote value. """
+        movie_column = self.vote + 's'
+        setattr(self.movie, movie_column, F(movie_column) + 1)
+        self.movie.save()
+
+        super(UserVote, self).save(*args, **kwargs)
