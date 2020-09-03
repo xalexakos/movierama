@@ -1,0 +1,83 @@
+body {
+    font-family: "Arial";
+    margin-right: 25px;
+    margin-left: 25px;
+}
+
+.top-bar {
+    margin-bottom: 25px;
+    border-bottom: 1 px solid black;
+}
+
+.top-bar .app-name{
+    width: 100px;
+    display: inline;
+}
+
+.top-bar h1.app-name a {
+    color: black;
+}
+
+.top-bar .user {
+    float: right;
+}
+
+.ordering {
+    height: 35px;
+    padding-top: 15px;
+    padding-left: 15px;
+    margin-bottom: 25px;
+    background-color: #f1f1f1;
+}
+
+.ordering a:hover {
+    cursor: pointer;
+}
+
+.movies-list {
+    width: 70%;
+}
+
+.movie {
+    border: 1px solid black;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+.title {
+    margin: 6px 0px 6px 0px;
+}
+
+.description {
+    padding-top: 12px;
+}
+
+.separator {
+    padding: 0px 5px 0px 5px;
+}
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    cursor: pointer;
+}
+
+.center {
+    width: 70%;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.page-ind {
+    float: right;
+    padding-right: 50px;
+}
