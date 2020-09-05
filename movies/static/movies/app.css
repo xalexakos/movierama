@@ -34,6 +34,10 @@ body {
     background-color: #f1f1f1;
 }
 
+.ordering a {
+    text-decoration: underline;
+}
+
 .ordering a:hover {
     cursor: pointer;
 }
@@ -42,11 +46,12 @@ body {
     overflow: hidden;
 }
 
-.add-movie-btn {
-    width: 30%;
-    overflow: hidden;
-    margin-top: 50px;
-    text-align: center;
+.add-movie-btn a {
+    float: right;
+    padding-right: 50px;
+    color: black;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
 .movies-list {
@@ -93,10 +98,7 @@ body {
     margin-bottom: 12px;
 }
 
-.page-ind {
-    float: right;
-    padding-right: 50px;
-}
+.page-ind { margin-bottom: 12px; }
 
 .registration-form {
     align-self: flex-start;
@@ -116,4 +118,16 @@ body {
     width: 75px;
     height: 25px;
     margin-top: 5px;
+}
+
+
+span.post-info a, span.user-info a {
+    color: black;
+    text-decoration: underline;
+}
+
+.user-logout {
+    color: black;
+    text-decoration: underline;
+    font-weight: bold;
 }
