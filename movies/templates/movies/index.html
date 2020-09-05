@@ -22,8 +22,11 @@
         <a onclick="sortMovies('-hates')">Hates</a>
         <span class="separator">&#124;</span>
         <a onclick="sortMovies('-created_at')">Date</a>
-        <span class="page-ind">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+        {% if page_obj.paginator.num_pages > 1 %}
+            <span class="page-ind">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+        {% endif %}
     </div>
+    {% spaceless %}
     <div class="movies-list">
         {% for movie in movies %}
             <div class="movie">
@@ -34,6 +37,7 @@
             </div>
         {% endfor %}
     </div>
+    {% endspaceless %}
     {% if page_obj.paginator.num_pages > 1 %}
         <div class="center">
             <div id="pages" class="pagination">
