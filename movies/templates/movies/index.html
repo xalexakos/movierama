@@ -1,9 +1,12 @@
 {% extends "movies/base.html" %}
+{% load movies_extra %}
 {% block userinfo %}
-<span class="user"><a>Login</a> or <a href="/user/registration/">Signup</a></span>
+<span class="user">
+    {% if not request.user.is_authenticated %}<a>Login</a> or <a href="/user/registration/">Signup</a>
+    {% else %}<a href="/user/logout/">Logout</a>{% endif %}
+</span>
 {% endblock %}
 {% block main %}
-{% load movies_extra %}
 <div class="ordering">
     <span>Sort by</span>&nbsp;
     <a onclick="sortMovies('-likes')">Likes</a>
@@ -20,7 +23,7 @@
     {% for movie in movies %}
     <div class="movie">
         <h2 class="title">{{ movie.title }}</h2>
-        <span class="post-info">Posted by {% get_user_repr request movie.user %} {{ movie.get_created_repr }}</span>
+        <span class="post-info">Posted by <a href="/?user={{ movie.user_id }}">{{ movie.user.first_name }} {{ movie.user.last_name }}</a> {{ movie.get_created_repr }}</span>
         <p class="description">{{ movie.description }}</p>
         <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
     </div>

@@ -27,7 +27,7 @@ class UserRegistrationViewTestCase(TestCase):
 
     def test_registration(self):
         """ user_registration_view register a user."""
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(13):
             response = self.client.post('/user/registration/', {
                 'username': 'arya', 'password1': 'p@ssw0rd123', 'password2': 'p@ssw0rd123',
                 'first_name': 'Arya', 'last_name': 'Stark'
@@ -45,6 +45,17 @@ class UserRegistrationViewTestCase(TestCase):
         self.assertTrue(user.is_authenticated)
 
         # attempt to create a user with the same username.
+        # user is already logged in -> redirect to movies list page.
+        with self.assertNumQueries(5):
+            response = self.client.post('/user/registration/', {
+                'username': 'arya', 'password1': 'p@ssw0rd123', 'password2': 'p@ssw0rd123',
+                'first_name': 'Arya', 'last_name': 'Stark'
+            }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+
+        self.client.logout()
         with self.assertNumQueries(1):
             response = self.client.post('/user/registration/', {
                 'username': 'arya', 'password1': 'p@ssw0rd123', 'password2': 'p@ssw0rd123',
