@@ -92,3 +92,16 @@ body {
     justify-items: left;
     align-items: left;
 }
+
+.login-form {
+    align-self: flex-start;
+    display: grid;
+    justify-items: left;
+    align-items: left;
+}
+
+.submit-btn {
+    width: 75px;
+    height: 25px;
+    margin-top: 5px;
+}
