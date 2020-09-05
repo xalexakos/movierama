@@ -10,7 +10,7 @@ from users.forms import UserRegistrationForm
 
 @anonymous_user
 def user_registration_view(request):
-    """ Register a new user and start a new session by redirecting to index page. """
+    """ Register a new user and start a new session by redirecting to movies list page. """
     form = UserRegistrationForm()
 
     if request.method == 'POST':
@@ -27,7 +27,7 @@ def user_registration_view(request):
 
 @login_required
 def user_logout_view(request):
-    """ Terminates user session and redirects to index page. """
+    """ Terminates user session and redirects to movies list page. """
     logout(request)
     return redirect('movies_list_view')
 

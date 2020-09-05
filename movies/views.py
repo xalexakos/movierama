@@ -5,7 +5,7 @@ from .models import Movie
 
 class MovieListPageView(ListView):
     model = Movie
-    template_name = 'movies/index.html'
+    template_name = 'movies/movies.html'
     context_object_name = 'movies'
     paginate_by = 10
 
