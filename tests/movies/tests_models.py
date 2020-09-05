@@ -24,13 +24,8 @@ class UserVoteModelTestCase(TestCase):
         movie = Movie.objects.create(title='New Movie', description='A cool movie to watch.',
                                      user_id=user.pk, likes=10, hates=2)
 
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(1):
             UserVote.objects.create(user_id=user.pk, movie_id=movie.pk, vote=USER_VOTE_LIKE)
-
-        # validate tha the movies likes number has been increased.
-        movie.refresh_from_db()
-        self.assertEqual(movie.likes, 11)
-        self.assertEqual(movie.hates, 2)
 
         # validate tha the user cannot vote again for the same movie.
         self.assertRaises(IntegrityError, UserVote.objects.create, user_id=user.pk, movie_id=movie.pk,

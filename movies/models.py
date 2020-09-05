@@ -34,11 +34,3 @@ class UserVote(models.Model):
 
     class Meta:
         unique_together = ('user', 'movie')
-
-    def save(self, *args, **kwargs):
-        """ Increment movies likes or hates according to the user's vote value. """
-        movie_column = self.vote + 's'
-        setattr(self.movie, movie_column, F(movie_column) + 1)
-        self.movie.save()
-
-        super(UserVote, self).save(*args, **kwargs)
