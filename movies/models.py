@@ -7,7 +7,7 @@ from .settings import USER_VOTE_CHOICES, USER_VOTE_MAX_LENGTH
 
 class Movie(models.Model):
     """ Movies model representation. """
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     likes = models.IntegerField(default=0)
     hates = models.IntegerField(default=0)
