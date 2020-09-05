@@ -29,7 +29,13 @@ class Movie(models.Model):
 
             return '%s hours ago' % int(date_diff.total_seconds() // 3600)
 
-        return '%s days ago' % date_diff.days
+        else:
+            if date_diff.days // 365:
+                return '%s years ago' % int(date_diff.days // 365)
+            elif date_diff.days // 30:
+                return '%s months ago' % int(date_diff.days // 30)
+            else:
+                return '%s days ago' % int(date_diff.days)
 
 
 class UserVote(models.Model):
