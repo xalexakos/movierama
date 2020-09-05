@@ -4,6 +4,10 @@ body {
     margin-left: 25px;
 }
 
+.has-error {
+    color: red;
+}
+
 .top-bar {
     margin-bottom: 25px;
     border-bottom: 1 px solid black;
@@ -80,4 +84,11 @@ body {
 .page-ind {
     float: right;
     padding-right: 50px;
+}
+
+.registration-form {
+    align-self: flex-start;
+    display: grid;
+    justify-items: left;
+    align-items: left;
 }

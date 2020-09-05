@@ -1,0 +1,25 @@
+{% extends "movies/base.html" %}
+{% block main %}
+<h1>User registration</h1>
+{% if form.errors %}
+<div class="has-error">
+    {% for field in form %}
+        {% for error in field.errors %}
+        <span>{{ error|escape }}</span>
+        {% endfor %}
+        {% endfor %}
+    <br /><br />
+</div>
+{% endif %}
+
+<form class="registration-form" action="" method="post" autocomplete="off">
+    {% csrf_token %}
+    {{ form.username.label}} {{ form.username }} <br />
+    {{ form.password1.label }} {{ form.password1 }} <br />
+    {{ form.password2.label }} {{ form.password2 }} <br />
+    {{ form.first_name.label }} {{ form.first_name }} <br />
+    {{ form.last_name.label }} {{ form.last_name }} <br />
+    <input type="submit" value="Create user" />
+</form>
+<p>Already have an account? <a href="">Login</a> here.</p>
+{% endblock %}
