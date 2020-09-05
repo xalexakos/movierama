@@ -38,8 +38,20 @@ body {
     cursor: pointer;
 }
 
+.movies {
+    overflow: hidden;
+}
+
+.add-movie-btn {
+    width: 30%;
+    overflow: hidden;
+    margin-top: 50px;
+    text-align: center;
+}
+
 .movies-list {
     width: 70%;
+    float: left;
 }
 
 .movie {

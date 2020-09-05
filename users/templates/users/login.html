@@ -1,7 +1,4 @@
 {% extends "movies/base.html" %}
-{% block userinfo %}
-<a class="user" href="/">Home</a>
-{% endblock %}
 {% block main %}
 <main class="main-holder">
     <h1>Login</h1>
@@ -15,9 +12,9 @@
 
     <form class="login-form" action="" method="post" autocomplete="off">
       {% csrf_token %}
-        {{ form.username.label}} {{ form.username }}
-        {{ form.password.label }} {{ form.password }}
-        <input type="submit" value="Login" class="submit-btn" />
+      {{ form.username.label}} {{ form.username }}
+      {{ form.password.label }} {{ form.password }}
+      <input type="submit" value="Login" class="submit-btn" />
     </form>
 
     <p class="small padding-top">New to MovieRama? <a href="{% url 'user_registration_view'%}">Register</a> here.</p>

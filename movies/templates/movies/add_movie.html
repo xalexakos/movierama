@@ -1,0 +1,33 @@
+{% extends "movies/base.html" %}
+{% block userinfo %}
+<span class="user"><span>Welcome back <a href="/?user={{ request.user.id }}">{{ request.user.first_name }} {{ request.user.last_name }}</a></span>&nbsp;&nbsp;
+<a href="/user/logout/">Logout</a></span>
+{% endblock %}
+{% block main %}
+<div class="movies">
+    <div class="movies-list">
+        <h1>Add a new movie.</h1>
+        {% if form.errors %}
+        <div class="has-error">
+            {% for field in form %}
+                {% for error in field.errors %}
+                <span>{{ field.label }}: {{ error|escape }}</span>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="has-error">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+            <br /><br />
+        </div>
+        {% endif %}
+        <form class="login-form" action="" method="post" autocomplete="off">
+            {% csrf_token %}
+            {{ form.title.label}} {{ form.title }} <br />
+            {{ form.description.label }} {{ form.description }} <br />
+            <input type="submit" value="Login" class="submit-btn" />
+        </form>
+    </div>
+</div>
+{% endblock %}

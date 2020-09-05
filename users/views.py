@@ -45,7 +45,7 @@ def user_login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect('movies_list_view')
+            return redirect(request.GET.get('next', 'movies_list_view'))
         else:
             messages.add_message(request, messages.ERROR, 'Invalid username or password')
 

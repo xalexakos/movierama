@@ -3,11 +3,12 @@ from django.db import models
 from django.utils.timezone import now
 
 from .settings import USER_VOTE_CHOICES, USER_VOTE_MAX_LENGTH
+from .validators import unique_movie_title
 
 
 class Movie(models.Model):
     """ Movies model representation. """
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255, validators=[unique_movie_title])
     description = models.TextField()
     likes = models.IntegerField(default=0)
     hates = models.IntegerField(default=0)

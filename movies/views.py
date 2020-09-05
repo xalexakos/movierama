@@ -1,5 +1,7 @@
+from django.shortcuts import redirect, render
 from django.views.generic import ListView
 
+from .forms import MovieCreateForm
 from .models import Movie
 
 
@@ -26,3 +28,38 @@ class MovieListPageView(ListView):
             queryset = queryset.filter(user_id=user_filter)
 
         return queryset
+
+
+class MovieAddPageView(ListView):
+    model = Movie
+    template_name = 'movies/add_movie.html'
+    context_object_name = 'movies'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MovieAddPageView, self).get_context_data(*args, **kwargs)
+        context['form'] = MovieCreateForm()
+
+        return context
+
+    def get_post_value(self, value):
+        """ """
+        post_value = self.request.POST.get(value)
+        if post_value:
+            post_value = post_value
+
+        # strip all whitespaces.
+        return post_value.lstrip().rstrip() if post_value else post_value
+
+    def post(self, request, *args, **kwargs):
+        post_data = {
+            'user': self.request.user,
+            'title': self.get_post_value('title'),
+            'description': self.get_post_value('description')
+        }
+
+        form = MovieCreateForm(data=post_data)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+
+        return render(request, self.template_name, {'form': form})

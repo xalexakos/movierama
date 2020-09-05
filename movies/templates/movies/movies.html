@@ -18,29 +18,34 @@
     <span class="page-ind">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
     {% endif %}
 </div>
+<div class="movies">
 {% spaceless %}
-<div class="movies-list">
-    {% for movie in movies %}
-    <div class="movie">
-        <h2 class="title">{{ movie.title }}</h2>
-        <span class="post-info">Posted by <a href="/?user={{ movie.user_id }}">
-            {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
-        </a> {{ movie.get_created_repr }}</span>
-        <p class="description">{{ movie.description }}</p>
-        <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
+    <div class="movies-list">
+        {% for movie in movies %}
+        <div class="movie">
+            <h2 class="title">{{ movie.title }}</h2>
+            <span class="post-info">Posted by <a href="/?user={{ movie.user_id }}">
+                {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
+            </a> {{ movie.get_created_repr }}</span>
+            <p class="description">{{ movie.description }}</p>
+            <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-    {% endspaceless %}
-    {% if page_obj.paginator.num_pages > 1 %}
-    <div class="center">
-        <div id="pages" class="pagination">
-            <a onclick="changePage(1)" class="page-number">&laquo;</a>
-            {% for i in page_obj.paginator.num_pages|pages_range %}
-            <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
-            {% endfor %}
-            <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
-        </div><br />
-    </div>
+    {% if request.user.is_authenticated %}
+    <div class="add-movie-btn"><a href="/add-movie/">Add a new movie</a></div>
     {% endif %}
+</div>
+{% endspaceless %}
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="center">
+    <div id="pages" class="pagination">
+        <a onclick="changePage(1)" class="page-number">&laquo;</a>
+        {% for i in page_obj.paginator.num_pages|pages_range %}
+        <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
+        {% endfor %}
+        <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
+    </div><br />
+</div>
+{% endif %}
 {% endblock %}
