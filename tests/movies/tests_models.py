@@ -14,7 +14,7 @@ class MovieModelTestCase(TestCase):
         m = Movie.objects.create(title='New Movie', description='A cool movie to watch.', user_id=user.pk)
         self.assertEqual(m.likes, 0)
         self.assertEqual(m.hates, 0)
-        self.assertEqual(m.created_at, now().date())
+        self.assertEqual(m.created_at.date(), now().date())
 
 
 class UserVoteModelTestCase(TestCase):

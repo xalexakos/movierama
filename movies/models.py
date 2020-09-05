@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import F
 from django.utils.timezone import now
 
 from .settings import USER_VOTE_CHOICES, USER_VOTE_MAX_LENGTH
@@ -12,18 +11,24 @@ class Movie(models.Model):
     description = models.TextField()
     likes = models.IntegerField(default=0)
     hates = models.IntegerField(default=0)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s' % self.title
 
     def get_created_repr(self):
-        days_diff = (now().date() - self.created_at).days
-        if not days_diff:
-            return 'today'
+        date_diff = now() - self.created_at
 
-        return '%s days ago' % days_diff
+        if not date_diff.days:
+            hours_diff = int(date_diff.total_seconds() // 3600)
+
+            if not hours_diff:
+                return '%s minutes ago' % int(date_diff.total_seconds() // 60)
+
+            return '%s hours ago' % int(date_diff.total_seconds() // 3600)
+
+        return '%s days ago' % date_diff.days
 
 
 class UserVote(models.Model):

@@ -20,9 +20,9 @@ class MovieListPageViewTestCase(TestCase):
         self.m2 = Movie.objects.create(title='B movie', description='Another nice movie.', user=self.user,
                                        likes=12, hates=6)
 
-        self.m1.created_at = (now() - timedelta(days=1)).date()
+        self.m1.created_at = (now() - timedelta(days=1))
         self.m1.save()
-        self.m2.created_at = (now() - timedelta(days=2)).date()
+        self.m2.created_at = (now() - timedelta(days=2))
         self.m2.save()
 
     def test_default_ordering(self):
