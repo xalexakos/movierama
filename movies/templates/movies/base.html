@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MovieRama</title>
+
+    {% load static %}
+    <script src="{% static 'movies/app.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'movies/app.css' %}">
+
+</head>
+<body>
+    <div class="top-bar">
+        <h1 class="app-name"><a href="/">MovieRama</a></h1>
+        <span class="user"><a>Login</a> or <a>Signup</a></span>
+    </div>
+    {% block main %}{% endblock %}
+</body>
+</html>

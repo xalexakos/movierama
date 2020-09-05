@@ -1,53 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-    {% load static %}
-    <script src="{% static 'movies/app.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'movies/app.css' %}">
-
-</head>
-<body>
-    {% load movies_extra %}
-    <div class="top-bar">
-        <h1 class="app-name"><a href="/">MovieRama</a></h1>
-        <span class="user"><a>Login</a> or <a>Signup</a></span>
+{% extends "movies/base.html" %}
+{% block main %}
+{% load movies_extra %}
+<div class="ordering">
+    <span>Sort by</span>&nbsp;
+    <a onclick="sortMovies('-likes')">Likes</a>
+    <span class="separator">&#124;</span>
+    <a onclick="sortMovies('-hates')">Hates</a>
+    <span class="separator">&#124;</span>
+    <a onclick="sortMovies('-created_at')">Date</a>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <span class="page-ind">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+    {% endif %}
+</div>
+{% spaceless %}
+<div class="movies-list">
+    {% for movie in movies %}
+    <div class="movie">
+        <h2 class="title">{{ movie.title }}</h2>
+        <span class="post-info">Posted by {% get_user_repr request movie.user %} {{ movie.get_created_repr }}</span>
+        <p class="description">{{ movie.description }}</p>
+        <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
     </div>
-    <div class="ordering">
-        <span>Sort by</span>&nbsp;
-        <a onclick="sortMovies('-likes')">Likes</a>
-        <span class="separator">&#124;</span>
-        <a onclick="sortMovies('-hates')">Hates</a>
-        <span class="separator">&#124;</span>
-        <a onclick="sortMovies('-created_at')">Date</a>
-        {% if page_obj.paginator.num_pages > 1 %}
-            <span class="page-ind">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
-        {% endif %}
-    </div>
-    {% spaceless %}
-    <div class="movies-list">
-        {% for movie in movies %}
-            <div class="movie">
-                <h2 class="title">{{ movie.title }}</h2>
-                <span class="post-info">Posted by {% get_user_repr request movie.user %} {{ movie.get_created_repr }}</span>
-                <p class="description">{{ movie.description }}</p>
-                <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
-            </div>
-        {% endfor %}
-    </div>
+    {% endfor %}
+</div>
     {% endspaceless %}
     {% if page_obj.paginator.num_pages > 1 %}
-        <div class="center">
-            <div id="pages" class="pagination">
-                <a onclick="changePage(1)" class="page-number">&laquo;</a>
-                {% for i in page_obj.paginator.num_pages|pages_range %}
-                    <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
-                {% endfor %}
-                <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
-            </div><br />
-        </div>
+    <div class="center">
+        <div id="pages" class="pagination">
+            <a onclick="changePage(1)" class="page-number">&laquo;</a>
+            {% for i in page_obj.paginator.num_pages|pages_range %}
+            <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
+            {% endfor %}
+            <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
+        </div><br />
+    </div>
     {% endif %}
-</body>
-</html>
+{% endblock %}
