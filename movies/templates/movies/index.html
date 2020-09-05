@@ -1,4 +1,7 @@
 {% extends "movies/base.html" %}
+{% block userinfo %}
+<span class="user"><a>Login</a> or <a href="/user/registration/">Signup</a></span>
+{% endblock %}
 {% block main %}
 {% load movies_extra %}
 <div class="ordering">

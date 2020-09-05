@@ -12,7 +12,7 @@
 <body>
     <div class="top-bar">
         <h1 class="app-name"><a href="/">MovieRama</a></h1>
-        <span class="user"><a>Login</a> or <a>Signup</a></span>
+        {% block userinfo %}{% endblock %}
     </div>
     {% block main %}{% endblock %}
 </body>
