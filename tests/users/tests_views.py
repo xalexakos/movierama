@@ -64,3 +64,47 @@ class UserRegistrationViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form']['username'].errors, ['A user with that username already exists.'])
+
+
+class UserLoginViewTestCase(TestCase):
+    def test_get(self):
+        """ user_login_view get() method. """
+        with self.assertNumQueries(0):
+            response = self.client.get('/user/login/')
+        self.assertEqual(response.status_code, 200)
+
+        response_form = response.context['form']
+        self.assertCountEqual([f for f in response_form.fields],
+                              ['username', 'password'])
+
+    def test_login_user_redirect(self):
+        """ user_login_view get() method redirect an already logged user. """
+        user = User.objects.create(username='nick', password='nick@brody', first_name='Nikolas', last_name='Brody')
+        self.client.force_login(user)
+
+        with self.assertNumQueries(5):
+            response = self.client.get('/user/login/', follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+
+    def test_invalid_credentials(self):
+        """ user_login_view post() method invalid credentials. """
+        with self.assertNumQueries(0):
+            response = self.client.post('/user/login/', {'user_name': 'test', 'password': 'user'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<h3 class="has-error">Invalid username or password</h3>')
+
+
+class UserLogoutViewTestCase(TestCase):
+    def test_user_logout(self):
+        """ user_logout_view get() method redirect an already logged user. """
+        user = User.objects.create(username='nick', password='nick@brody', first_name='Nikolas', last_name='Brody')
+        self.client.force_login(user)
+
+        with self.assertNumQueries(5):
+            response = self.client.get('/user/logout/', follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
