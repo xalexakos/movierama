@@ -139,9 +139,16 @@ span.post-info a, span.user-info a, span.user a {
 }
 
 #id_username, #id_password, #id_password1,
-#id_password2, #id_first_name, #id_last_name {
+#id_password2, #id_first_name, #id_last_name,
+#id_title {
     width: 250px;
     height: 20px;
+}
+
+#id_description {
+    resize: none;
+    width: 50%;
+    height: 250px
 }
 
 .hidden {
