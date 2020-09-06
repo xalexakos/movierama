@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import now
 
-from .settings import USER_VOTE_CHOICES, USER_VOTE_MAX_LENGTH
 from .validators import unique_movie_title
 
 
@@ -36,13 +35,3 @@ class Movie(models.Model):
                 return '%s months ago' % int(date_diff.days // 30)
             else:
                 return '%s days ago' % int(date_diff.days)
-
-
-class UserVote(models.Model):
-    """ Mark whether a user has voted for a specific film. """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    vote = models.CharField(choices=USER_VOTE_CHOICES, max_length=USER_VOTE_MAX_LENGTH)
-
-    class Meta:
-        unique_together = ('user', 'movie')

@@ -19,30 +19,41 @@
     <span class="add-movie-btn"><a href="/add-movie/">New movie</a></span>
     {% endif %}
 </div>
-{% spaceless %}
-    <div class="movies-list">
-        {% if page_obj.paginator.num_pages > 1 %}
-        <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div>
-        {% endif %}
-        {% if not movies %}
-        <h3>No movies were found.</h3>
-        {% else %}
-        {% for movie in movies %}
-        <div class="movie">
-            <h2 class="title">{{ movie.title }}</h2>
-            <span class="post-info">Posted by <a href="/?user={{ movie.user_id }}">
-                {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
-            </a>&nbsp;{{ movie.get_created_repr }}</span>
-            <p class="description">{{ movie.description }}</p>
-            <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
-        </div>
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="center">
+    <div class="pagination">
+        <a onclick="changePage(1)" class="page-number">&laquo;</a>
+        {% for i in page_obj.paginator.num_pages|pages_range %}
+        <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
         {% endfor %}
-        {% endif %}
+        <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
+    </div><br />
     </div>
+{% endif %}
+{% spaceless %}
+<div class="movies-list">
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div>
+    {% endif %}
+    {% if not movies %}
+    <h3>No movies were found.</h3>
+    {% else %}
+    {% for movie in movies %}
+    <div class="movie">
+        <h2 class="title">{{ movie.title }}</h2>
+        <span class="post-info">Posted by <a href="/?user={{ movie.user_id }}">
+            {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
+        </a>&nbsp;{{ movie.get_created_repr }}</span>
+        <p class="description">{{ movie.description }}</p>
+        <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
 {% endspaceless %}
 {% if page_obj.paginator.num_pages > 1 %}
 <div class="center">
-    <div id="pages" class="pagination">
+    <div class="pagination">
         <a onclick="changePage(1)" class="page-number">&laquo;</a>
         {% for i in page_obj.paginator.num_pages|pages_range %}
         <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
