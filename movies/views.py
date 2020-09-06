@@ -21,7 +21,8 @@ class MovieListPageView(ListView):
         return super(MovieListPageView, self).get_ordering()
 
     def get_queryset(self):
-        queryset = super(MovieListPageView, self).get_queryset().prefetch_related('user')
+        queryset = super(MovieListPageView, self).get_queryset() \
+            .prefetch_related('user', 'likes__users', 'hates__users')
 
         user_filter = self.request.GET.get('user')
         if user_filter:

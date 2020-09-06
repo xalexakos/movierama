@@ -9,15 +9,22 @@ class Movie(models.Model):
     """ Movies model representation. """
     title = models.CharField(max_length=255, validators=[unique_movie_title])
     description = models.TextField()
-    likes = models.IntegerField(default=0)
-    hates = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return '%s' % self.title
 
+    @property
+    def total_likes(self):
+        return self.likes.users.count()
+
+    @property
+    def total_hates(self):
+        return self.hates.users.count()
+
     def get_created_repr(self):
+        """ Formats the date to the closest interval (seconds, minutes, hours, days, months, years). """
         date_diff = now() - self.created_at
 
         if not date_diff.days:
@@ -35,3 +42,21 @@ class Movie(models.Model):
                 return '%s months ago' % int(date_diff.days // 30)
             else:
                 return '%s days ago' % int(date_diff.days)
+
+
+# User votes can be represented in two models, one for likes and one for hates.
+# Going that way will make it easier to handle like/hate vote counts when a user either updates his vote or
+# entirely removes it.
+# create, update timestamps are handle automatically during create/update operations.
+class Like(models.Model):
+    movie = models.OneToOneField(Movie, on_delete=models.CASCADE, related_name='likes')
+    users = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Hate(models.Model):
+    movie = models.OneToOneField(Movie, on_delete=models.CASCADE, related_name='hates')
+    users = models.ManyToManyField(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

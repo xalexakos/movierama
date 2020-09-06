@@ -45,7 +45,7 @@
             {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
         </a>&nbsp;{{ movie.get_created_repr }}</span>
         <p class="description">{{ movie.description }}</p>
-        <span>{{ movie.likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.hates }} hates</span>
+        <span>{{ movie.total_likes }} likes</span><span class="separator">&#124;</span><span>{{ movie.total_hates }} hates</span>
     </div>
     {% endfor %}
     {% endif %}

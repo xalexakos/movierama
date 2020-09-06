@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
-from movies.models import Movie
+from movies.models import Movie, Like, Hate
 
 
 class MovieListPageViewTestCase(TestCase):
@@ -16,10 +16,13 @@ class MovieListPageViewTestCase(TestCase):
 
         self.user = User.objects.create(username='test_user', password='test_password')
 
-        self.m1 = Movie.objects.create(title='A movie', description='A nice movie.', user=self.user,
-                                       likes=15, hates=3)
-        self.m2 = Movie.objects.create(title='B movie', description='Another nice movie.', user=self.user,
-                                       likes=12, hates=6)
+        self.m1 = Movie.objects.create(title='A movie', description='A nice movie.', user=self.user)
+        Like.objects.create(movie=self.m1)
+        self.m1.likes.users.add(self.user)
+
+        self.m2 = Movie.objects.create(title='B movie', description='Another nice movie.', user=self.user)
+        Hate.objects.create(movie=self.m2)
+        self.m2.hates.users.add(self.user)
 
         self.m1.created_at = (now() - timedelta(days=1))
         self.m1.save()
@@ -28,7 +31,7 @@ class MovieListPageViewTestCase(TestCase):
 
     def test_default_ordering(self):
         """ MovieListPageView get() method with default ordering. """
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name))
 
         self.assertEqual(response.status_code, 200)
@@ -36,13 +39,13 @@ class MovieListPageViewTestCase(TestCase):
 
     def test_likes_ordering(self):
         """ MovieListPageView get() method ordered by likes. """
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=likes')
 
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context['movies']), [self.m2, self.m1])
 
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=-likes')
 
         self.assertEqual(response.status_code, 200)
@@ -50,13 +53,13 @@ class MovieListPageViewTestCase(TestCase):
 
     def test_hates_ordering(self):
         """ MovieListPageView get() method ordered by hates. """
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=hates')
 
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context['movies']), [self.m1, self.m2])
 
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=-hates')
 
         self.assertEqual(response.status_code, 200)
@@ -64,13 +67,13 @@ class MovieListPageViewTestCase(TestCase):
 
     def test_created_ordering(self):
         """ MovieListPageView get() method ordered by hates. """
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=created_at')
 
         self.assertEqual(response.status_code, 200)
         self.assertListEqual(list(response.context['movies']), [self.m2, self.m1])
 
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=-created_at')
 
         self.assertEqual(response.status_code, 200)
@@ -78,7 +81,7 @@ class MovieListPageViewTestCase(TestCase):
 
     def test_invalid_ordering(self):
         """ MovieListPageView get() method ordered by hates. """
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(7):
             response = self.client.get(reverse(self.view_name) + '?ordering=a')
 
         self.assertEqual(response.status_code, 200)
@@ -142,7 +145,7 @@ class MovieAddPageViewTestCase(TestCase):
         self.assertEqual(Movie.objects.count(), 0)
 
         # existing movie.
-        Movie.objects.create(title='A movie', description='A nice movie.', user=self.user, likes=15, hates=3)
+        Movie.objects.create(title='A movie', description='A nice movie.', user=self.user)
         with self.assertNumQueries(5):
             response = self.client.post(reverse(self.view_name), {'title': 'A movie', 'description': 'Desc'})
 
@@ -154,7 +157,7 @@ class MovieAddPageViewTestCase(TestCase):
     def test_post_add_movie(self):
         """ MovieAddPageView get() method create a new movie. """
         self.client.force_login(self.user)
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(13):
             response = self.client.post(reverse(self.view_name), {'title': 'A movie', 'description': 'Desc'},
                                         follow=True)
 
