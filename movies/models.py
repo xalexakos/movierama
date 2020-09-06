@@ -17,11 +17,17 @@ class Movie(models.Model):
 
     @property
     def total_likes(self):
-        return self.likes.users.count()
+        if hasattr(self, 'likes'):
+            return self.likes.users.count()
+
+        return 0
 
     @property
     def total_hates(self):
-        return self.hates.users.count()
+        if hasattr(self, 'hates'):
+            return self.hates.users.count()
+
+        return 0
 
     def get_created_repr(self):
         """ Formats the date to the closest interval (seconds, minutes, hours, days, months, years). """

@@ -163,3 +163,93 @@ class MovieAddPageViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Movie.objects.filter(title='A movie').count(), 1)
+
+
+class MovieVoteViewTestCase(TestCase):
+    view_name = 'movies_vote_view'
+
+    def setUp(self) -> None:
+        super(MovieVoteViewTestCase, self).setUp()
+
+        self.user = User.objects.create(username='test_user', password='test_password')
+
+    def test_unauthorized_user(self):
+        """ MovieVoteView get() with a non authorized user. """
+        movie = Movie.objects.create(title='Batman Begins', description='Movie of a lifetime0', user=self.user)
+
+        with self.assertNumQueries(0):
+            response = self.client.get(reverse(self.view_name, args=[movie.id, 'like']), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/user/login/?next=/vote/%s/like/' % movie.id)
+
+    def test_movie_owner(self):
+        """ MovieVoteView get() with an owner's vote. """
+        self.client.force_login(self.user)
+        movie = Movie.objects.create(title='Batman Begins', description='Movie of a lifetime0', user=self.user)
+
+        with self.assertNumQueries(3):
+            response = self.client.get(reverse(self.view_name, args=[movie.id, 'like']), follow=True)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_vote(self):
+        """ MovieVoteView get() with a valid vote. """
+        self.client.force_login(self.user)
+
+        user = User.objects.create(username='batman', password='begins')
+        movie = Movie.objects.create(title='Batman Begins', description='Movie of a lifetime0', user=user)
+
+        with self.assertNumQueries(19):
+            response = self.client.get(reverse(self.view_name, args=[movie.id, 'like']), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+
+        movie.refresh_from_db()
+        self.assertEqual(movie.total_likes, 1)
+        self.assertEqual(movie.total_hates, 0)
+
+    def test_retrieve_vote(self):
+        """ MovieVoteView get() retrieve a valid vote. """
+        self.client.force_login(self.user)
+
+        user = User.objects.create(username='batman', password='begins')
+        movie = Movie.objects.create(title='Batman Begins', description='Movie of a lifetime0', user=user)
+        Like.objects.create(movie=movie)
+        movie.likes.users.add(self.user)
+
+        self.assertEqual(movie.total_likes, 1)
+        self.assertEqual(movie.total_hates, 0)
+
+        with self.assertNumQueries(17):
+            response = self.client.get(reverse(self.view_name, args=[movie.id, 'like']), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+
+        movie.refresh_from_db()
+        self.assertEqual(movie.total_likes, 0)
+        self.assertEqual(movie.total_hates, 0)
+
+    def test_update_vote(self):
+        """ MovieVoteView get() update a valid vote. """
+        self.client.force_login(self.user)
+
+        user = User.objects.create(username='batman', password='begins')
+        movie = Movie.objects.create(title='Batman Begins', description='Movie of a lifetime0', user=user)
+        Like.objects.create(movie=movie)
+        movie.likes.users.add(self.user)
+
+        self.assertEqual(movie.total_likes, 1)
+        self.assertEqual(movie.total_hates, 0)
+
+        with self.assertNumQueries(18):
+            response = self.client.get(reverse(self.view_name, args=[movie.id, 'hate']), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/')
+
+        movie.refresh_from_db()
+        self.assertEqual(movie.total_likes, 0)
+        self.assertEqual(movie.total_hates, 1)

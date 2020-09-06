@@ -1,8 +1,12 @@
-from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render, get_object_or_404
+from django.urls import reverse
+from django.views import View
 from django.views.generic import ListView
 
 from .forms import MovieCreateForm
-from .models import Movie
+from .models import Movie, Like, Hate
+from .utils import get_response_query_params
 
 
 class MovieListPageView(ListView):
@@ -64,3 +68,38 @@ class MovieAddPageView(ListView):
             return redirect('/')
 
         return render(request, self.template_name, {'form': form})
+
+
+class MovieVoteView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        """ Let user vote for a movie that he did not register. """
+        movies = Movie.objects.exclude(user_id=self.request.user.id)
+        movie = get_object_or_404(movies, pk=self.kwargs.get('movie_id'))
+
+        # initialize the movie -> vote relations in case they do not already exists
+        # (this should be executed when a movie is being voted for the first time.)
+        if not hasattr(movie, 'likes'):
+            Like.objects.create(movie=movie)
+
+        if not hasattr(movie, 'hates'):
+            Hate.objects.create(movie=movie)
+
+        # when a user is voting:
+        # check if this vote already exists.
+        # in case it does remove the vote.
+        # in case it does not add a new vote and remove any possible counter vote.
+        vote = self.kwargs.get('vote')
+        if vote.lower() == 'like':
+            if request.user in movie.likes.users.all():
+                movie.likes.users.remove(request.user)
+            else:
+                movie.likes.users.add(request.user)
+                movie.hates.users.remove(request.user)
+        elif vote.lower() == 'hate':
+            if request.user in movie.hates.users.all():
+                movie.hates.users.remove(request.user)
+            else:
+                movie.hates.users.add(request.user)
+                movie.likes.users.remove(request.user)
+
+        return redirect(reverse('movies_list_view') + get_response_query_params(self.request))
