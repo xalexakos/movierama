@@ -42,6 +42,21 @@ const setActiveOrdering = () => {
     }
 };
 
+const setActivePage = () => {
+    let url = window.location.href;
+    pagesLinks = document.getElementsByClassName("page-number");
+
+    for (let i = 0; i < pagesLinks.length; i++) {
+        console.log(pagesLinks[i].innerHTML);
+        if (url.includes('page=' + pagesLinks[i].innerHTML)) {
+            pagesLinks[i].classList.add('active');
+        } else {
+            pagesLinks[i].classList.remove('active');
+        }
+    }
+};
+
 window.addEventListener('load', (event) => {
     setActiveOrdering();
+    setActivePage();
 });

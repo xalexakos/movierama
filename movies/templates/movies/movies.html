@@ -26,12 +26,11 @@
     <div class="pagination">
         <a onclick="changePage(1)" class="page-number">&laquo;</a>
         {% for i in page_obj.paginator.num_pages|pages_range %}
-        <a onclick="changePage({{ i }})" class="page-number {% if i == 1%}active{% endif%}">{{ i }}</a>
+        <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
         {% endfor %}
         <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
-    </div><br />
-    <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div><br />
     </div>
+</div>
 {% endif %}
 {% spaceless %}
 <div class="movies-list">
@@ -61,8 +60,7 @@
         <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
         {% endfor %}
         <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
-    </div><br />
-    <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div><br />
+    </div>
 </div>
 {% endif %}
 {% endblock %}

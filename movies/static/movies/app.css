@@ -133,11 +133,11 @@ span.vote a {
     text-decoration: underline;
 }
 
-span.vote a {
+a.page-number {
     font-size: 14px;
 }
 
-span.vote a.voted {
+span.vote a.voted, a.page-number.active, .ord-btn.active {
     font-weight: bold;
     font-size: 18px;
 }
