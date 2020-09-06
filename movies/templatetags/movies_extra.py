@@ -22,11 +22,13 @@ def get_vote_display(request, movie, vote):
     if not request.user.is_authenticated or request.user.id == movie.user.id:
         return votes_verbose
 
+    voted = getattr(movie, '%ss' % vote).users.filter(pk=request.user.id).exists()
     return safe(
-        '<a href="/vote/%(movie_id)s/%(vote)s/%(url_search_params)s">%(verbose)s</a>' % {
+        '<a class="%(class_name)s" href="/vote/%(movie_id)s/%(vote)s/%(url_search_params)s">%(verbose)s</a>' % {
             'verbose': votes_verbose,
             'movie_id': movie.id,
             'vote': vote,
-            'url_search_params': get_response_query_params(request)
+            'url_search_params': get_response_query_params(request),
+            'class_name': 'voted' if voted else ''
         }
     )

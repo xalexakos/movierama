@@ -45,9 +45,9 @@
             {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
         </a>&nbsp;{{ movie.get_created_repr }}</span>
         <p class="description">{{ movie.description }}</p>
-        <span>{% get_vote_display request movie 'like' %}</span>
+        <span class="vote">{% get_vote_display request movie 'like' %}</span>
         <span class="separator">&#124;</span>
-        <span>{% get_vote_display request movie 'hate' %}</span>
+        <span class="vote">{% get_vote_display request movie 'hate' %}</span>
     </div>
     {% endfor %}
     {% endif %}

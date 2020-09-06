@@ -127,9 +127,19 @@ a.active {
 }
 
 
-span.post-info a, span.user-info a, span.user a {
+span.post-info a, span.user-info a, span.user a,
+span.vote a {
     color: black;
     text-decoration: underline;
+}
+
+span.vote a {
+    font-size: 14px;
+}
+
+span.vote a.voted {
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .user-logout {

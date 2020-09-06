@@ -200,7 +200,7 @@ class MovieVoteViewTestCase(TestCase):
         user = User.objects.create(username='batman', password='begins')
         movie = Movie.objects.create(title='Batman Begins', description='Movie of a lifetime0', user=user)
 
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(21):
             response = self.client.get(reverse(self.view_name, args=[movie.id, 'like']), follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -210,7 +210,7 @@ class MovieVoteViewTestCase(TestCase):
         self.assertEqual(movie.total_likes, 1)
         self.assertEqual(movie.total_hates, 0)
 
-    def test_retrieve_vote(self):
+    def test_remove_vote(self):
         """ MovieVoteView get() retrieve a valid vote. """
         self.client.force_login(self.user)
 
@@ -222,7 +222,7 @@ class MovieVoteViewTestCase(TestCase):
         self.assertEqual(movie.total_likes, 1)
         self.assertEqual(movie.total_hates, 0)
 
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(19):
             response = self.client.get(reverse(self.view_name, args=[movie.id, 'like']), follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -244,7 +244,7 @@ class MovieVoteViewTestCase(TestCase):
         self.assertEqual(movie.total_likes, 1)
         self.assertEqual(movie.total_hates, 0)
 
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(20):
             response = self.client.get(reverse(self.view_name, args=[movie.id, 'hate']), follow=True)
 
         self.assertEqual(response.status_code, 200)
