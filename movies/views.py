@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.views import View
@@ -25,12 +26,24 @@ class MovieListPageView(ListView):
         return super(MovieListPageView, self).get_ordering()
 
     def get_queryset(self):
-        queryset = super(MovieListPageView, self).get_queryset() \
-            .prefetch_related('user', 'likes__users', 'hates__users')
+        """ Create a custom method to handle m2m relationship ordering and user filtering. """
+        queryset = self.model.objects.prefetch_related('user', 'likes__users', 'hates__users')
 
         user_filter = self.request.GET.get('user')
         if user_filter:
             queryset = queryset.filter(user_id=user_filter)
+
+        ordering = self.get_ordering()
+        if ordering:
+
+            if 'likes' in ordering or 'hates' in ordering:
+                vote_ordering = ordering.replace('-', '')
+                queryset = queryset.annotate(**{'%s_count' % vote_ordering: Count('%s__users' % vote_ordering)})
+                ordering = '%s_count' % ordering
+
+            if isinstance(ordering, str):
+                ordering = (ordering,)
+            queryset = queryset.order_by(*ordering)
 
         return queryset
 
