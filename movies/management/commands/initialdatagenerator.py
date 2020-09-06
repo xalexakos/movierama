@@ -4,22 +4,20 @@ from datetime import timedelta
 import requests
 from django.contrib.auth.models import User
 from django.core.management import BaseCommand
+from django.db import IntegrityError
 from django.utils.timezone import now
 
-from movies.models import Movie
-
+from movies.models import Movie, Like, Hate
 
 USER_DATA = [
-    {'user': {'username': 'john', 'first_name': 'John', 'last_name': 'Mayer', 'password': 'johnm123'},
-     'movies': ['Rambo', 'Rocky']},
-    {'user': {'username': 'nickb', 'first_name': 'Nickolas', 'last_name': 'Brody', 'password': 'ihavebeeninsyria123'},
-     'movies': ['Lord of the rings', 'Harry Potter']},
+    {'user': {'username': 'jonny', 'first_name': 'Jonny', 'last_name': 'Greenwood', 'password': 'jonnygw123'},
+     'movies': ['The Shawshank Redemption', 'The Godfather', 'The Godfather: Part II']},
     {'user': {'username': 'rogerf', 'first_name': 'Roger', 'last_name': 'Federer', 'password': 'iamthegoat123'},
-     'movies': ['Amelie', 'Hunger Games']},
-    {'user': {'username': 'alant', 'first_name': 'Alan', 'last_name': 'Turing', 'password': 'alanfort123'},
-     'movies': ['Fast and Furious', 'Imitation game']},
+     'movies': ['The Dark Knight', '12 Angry Men', 'Schindler\'s List', 'Inception']},
+    {'user': {'username': 'maisie', 'first_name': 'Maisie', 'last_name': 'Williams', 'password': 'aryastark123'},
+     'movies': ['The Lord of the Rings: The Return of the King', 'Pulp Fiction', 'Forrest Gump']},
     {'user': {'username': 'vanessam', 'first_name': 'Vanessa', 'last_name': 'May', 'password': 'vviolin123'},
-     'movies': ['Jurassic Park', 'Titanic']},
+     'movies': ['The Good, the Bad and the Ugly', 'The Lord of the Rings: The Fellowship of the Ring', 'Fight Club']},
 ]
 
 
@@ -29,70 +27,64 @@ class Command(BaseCommand):
 
     help = """ Create some user and import some movies using the OMDb api."""
 
-    def create_movies(self, movie_title, user):
-        query = 'http://www.omdbapi.com/?apikey=%(api_key)s&type=movie&s=%(query)s' % {
-            'app_id': self.APP_ID, 'api_key': self.API_KEY, 'query': movie_title
-        }
-        response = requests.get(query)
+    def create_movies(self, movies, user):
+        self.stdout.write(self.style.ERROR('Importing some movies for user: %s' % user))
 
-        m_count = 0
-        if response.status_code == 200:
-            movies = response.json()['Search']
+        movies_added = []
+        for m in movies:
+            movie_resp = requests.get(
+                'http://www.omdbapi.com/?apikey=%(api_key)s&type=movie&t=%(title)s&plot=full' %
+                {'app_id': self.APP_ID, 'api_key': self.API_KEY, 'title': m}
+            )
 
-            for m in movies:
-                movie_resp = requests.get(
-                    'http://www.omdbapi.com/?apikey=%(api_key)s&type=movie&i=%(imdbID)s&plot=full' %
-                    {'app_id': self.APP_ID, 'api_key': self.API_KEY, 'imdbID': m['imdbID']}
+            if movie_resp.status_code == 200:
+                movie = movie_resp.json()
+
+                m_instance, created = Movie.objects.get_or_create(
+                    title=movie['Title'],
+                    description=movie['Plot'],
+                    user=user
                 )
 
-                if movie_resp.status_code == 200:
-                    movie = movie_resp.json()
+                if created:
+                    movies_added.append(m_instance.id)
 
-                    try:
-                        metascore = int(movie['Metascore'])
-                    except ValueError:
-                        metascore = 76
+                    self.stdout.write(self.style.WARNING('Added "%s" movie' % movie['Title']))
 
-                    plot = movie['Plot']
-                    if not plot or plot == 'N/A':
-                        plot = """ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus dictum tellus 
-                        massa, in molestie quam scelerisque ut. Mauris cursus, est et rutrum accumsan, diam est 
-                        ultricies nulla, ac facilisis velit augue non ante. Sed orci sapien, scelerisque at orci eu, 
-                        tincidunt rhoncus nisi. Phasellus ac nisi nisi. Duis sapien risus, posuere et dignissim in, 
-                        blandit tristique lectus. Praesent blandit libero ut nisi aliquam efficitur. Vivamus et 
-                        accumsan enim. Pellentesque sem nunc, tincidunt nec elit sit amet, ultricies fermentum dolor. 
-                        Nulla nec egestas velit. Vivamus quis arcu quis elit dictum suscipit. Nulla ullamcorper rhoncus
-                        malesuada. 
-                         
-                        Quisque et fringilla lacus, non congue quam. Ut eget lacus nec dolor sollicitudin scelerisque. 
-                        Nam maximus elit eu tortor maximus, nec convallis lectus aliquam. Suspendisse potenti. Quisque 
-                        mollis arcu non erat molestie, et pellentesque nunc pharetra. Aliquam posuere magna in commodo 
-                        tincidunt. Integer mollis euismod libero, a mollis ipsum rutrum et. In ac pulvinar tortor, 
-                        non."""
+                # randomize the added dates.
+                m_instance.created_at = now() - timedelta(days=random.randint(10, 1000))
+                m_instance.save()
 
-                    m_instance, created = Movie.objects.get_or_create(
-                        title=movie['Title'],
-                        description=plot,
-                        likes=metascore,
-                        hates=100 - metascore,
-                        user=user
-                    )
-                    if created:
-                        m_count += 1
+                Like.objects.get_or_create(movie=m_instance)
+                Hate.objects.get_or_create(movie=m_instance)
 
-                    m_instance.created_at = now() - timedelta(days=random.randint(10, 1000))
-                    m_instance.save()
-
-        return m_count
+        return movies_added
 
     def handle(self, *args, **options):
-        movies_count = 0
         for ud in USER_DATA:
             user = User.objects.get_or_create(**ud['user'])
+            self.create_movies(ud['movies'], user=user[0])
 
-            self.stdout.write(self.style.WARNING('Importing some movies for user: %s' % user[0]))
+        # create some extra users just to vote.
+        for i in range(20):
+            try:
+                User.objects.create(
+                    username='username' + str(i + 1),
+                    password='userpassword' + str(i + 1),
+                    first_name='User' + str(i + 1),
+                    last_name='User' + str(i + 1),
+                )
+            except IntegrityError:
+                pass
 
-            for m in ud['movies']:
-                movies_count += self.create_movies(m, user=user[0])
+        self.stdout.write(self.style.WARNING('Now its time to vote.'))
+        for u in User.objects.all():
+            for movie in Movie.objects.exclude(user=u):
 
-        self.stdout.write(self.style.SUCCESS('Created 4 users and imported %s movies.' % movies_count))
+                dice_1000 = random.randint(1, 1000)
+                if dice_1000 < 700 and u not in movie.likes.users.all():
+                    movie.likes.users.add(u)
+                elif u not in movie.hates.users.all():
+                    movie.hates.users.add(u)
+
+        self.stdout.write(self.style.SUCCESS('All votes were successfully submitted.'))
