@@ -10,38 +10,38 @@
 {% block main %}
 <div class="ordering">
     <span>Sort by</span>&nbsp;
-    <a onclick="sortMovies('-likes')">Likes</a>
+    <a id="likes" class="ord-btn" onclick="sortMovies('likes')">Likes <span class="hidden up-arr">&uarr;</span><span class="hidden dow-arr">&darr;</span></a>
     <span class="separator">&#124;</span>
-    <a onclick="sortMovies('-hates')">Hates</a>
+    <a id="hates" class="ord-btn"  onclick="sortMovies('hates')">Hates <span class="hidden up-arr">&uarr;</span><span class="hidden dow-arr">&darr;</span></a>
     <span class="separator">&#124;</span>
-    <a onclick="sortMovies('-created_at')">Date</a>
+    <a id="created_at" class="ord-btn" onclick="sortMovies('created_at')">Date <span class="hidden up-arr">&uarr;</span><span class="hidden dow-arr">&darr;</span></a>
+    {% if active_ordering %}<a class="user-filter-x" href="/">&times;</a>{% endif %}
     {% if request.user.is_authenticated %}
     <span class="add-movie-btn"><a href="/add-movie/">New movie</a></span>
     {% endif %}
+    {% if user_filter %}<span class="user-filter">User: {{ user_filter }}</span><a class="user-filter-x" href="/">&times;</a>{% endif %}
 </div>
 {% if page_obj.paginator.num_pages > 1 %}
 <div class="center">
     <div class="pagination">
         <a onclick="changePage(1)" class="page-number">&laquo;</a>
         {% for i in page_obj.paginator.num_pages|pages_range %}
-        <a onclick="changePage({{ i }})" class="page-number">{{ i }}</a>
+        <a onclick="changePage({{ i }})" class="page-number {% if i == 1%}active{% endif%}">{{ i }}</a>
         {% endfor %}
         <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
     </div><br />
+    <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div><br />
     </div>
 {% endif %}
 {% spaceless %}
 <div class="movies-list">
-    {% if page_obj.paginator.num_pages > 1 %}
-    <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div>
-    {% endif %}
     {% if not movies %}
     <h3>No movies were found.</h3>
     {% else %}
     {% for movie in movies %}
     <div class="movie">
         <h2 class="title">{{ movie.title }}</h2>
-        <span class="post-info">Posted by <a href="/?user={{ movie.user_id }}">
+        <span class="post-info">Posted by <a href="/?u={{ movie.user_id }}">
             {% if request.user.id == movie.user.id %}You{% else %}{{ movie.user.first_name }} {{ movie.user.last_name }}{% endif %}
         </a>&nbsp;{{ movie.get_created_repr }}</span>
         <p class="description">{{ movie.description }}</p>
@@ -62,6 +62,7 @@
         {% endfor %}
         <a onclick="changePage({{ page_obj.paginator.num_pages }})" class="page-number">&raquo;</a>
     </div><br />
+    <div class="page-ind"><span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span></div><br />
 </div>
 {% endif %}
 {% endblock %}

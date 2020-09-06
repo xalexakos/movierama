@@ -85,6 +85,10 @@ body {
     color: black;
     float: left;
     padding: 8px 16px;
+    text-decoration: underline;
+}
+
+a.active {
     text-decoration: none;
 }
 
@@ -98,7 +102,9 @@ body {
     margin-bottom: 12px;
 }
 
-.page-ind { margin-bottom: 12px; }
+.page-ind {
+    margin-bottom: 12px; font-size: 12px;
+}
 
 .registration-form {
     align-self: flex-start;
@@ -121,7 +127,7 @@ body {
 }
 
 
-span.post-info a, span.user-info a {
+span.post-info a, span.user-info a, span.user a {
     color: black;
     text-decoration: underline;
 }
@@ -130,4 +136,28 @@ span.post-info a, span.user-info a {
     color: black;
     text-decoration: underline;
     font-weight: bold;
+}
+
+#id_username, #id_password, #id_password1,
+#id_password2, #id_first_name, #id_last_name {
+    width: 250px;
+    height: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.up-arr, .dow-arr {
+    font-size: 18px;
+}
+
+.user-filter {
+    margin-left: 25px;
+}
+
+.user-filter-x {
+    margin-left: 5px;
+    font-size: 16px;
+    color: red;
 }
