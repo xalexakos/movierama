@@ -7,7 +7,7 @@ def get_response_query_params(request):
 
     user_filter = request.GET.get('user')
     if user_filter:
-        q_params.append('user=' + user_filter)
+        q_params.append('u=' + user_filter)
 
     page_no = request.GET.get('page')
     if page_no:

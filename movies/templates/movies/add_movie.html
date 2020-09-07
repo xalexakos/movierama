@@ -1,6 +1,6 @@
 {% extends "movies/base.html" %}
 {% block userinfo %}
-<span class="user"><span>Welcome back <a href="/?user={{ request.user.id }}">{{ request.user.first_name }} {{ request.user.last_name }}</a></span>&nbsp;&nbsp;
+<span class="user">Welcome back {{ request.user.first_name }} {{ request.user.last_name }}&nbsp;&nbsp;
 <a href="/user/logout/">Logout</a></span>
 {% endblock %}
 {% block main %}
