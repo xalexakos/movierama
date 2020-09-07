@@ -42,6 +42,14 @@ const setActiveOrdering = () => {
     }
 };
 
+const removeSearchParam = (search_param) => {
+    let url = new URL(window.location.href);
+    let search_params = url.searchParams;
+    search_params.delete(search_param);
+
+    window.location.href = url.toString();
+};
+
 const setActivePage = () => {
     let url = window.location.href;
     pagesLinks = document.getElementsByClassName("page-number");

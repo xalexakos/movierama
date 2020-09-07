@@ -15,11 +15,11 @@
     <a id="hates" class="ord-btn"  onclick="sortMovies('hates')">Hates <span class="hidden up-arr">&uarr;</span><span class="hidden dow-arr">&darr;</span></a>
     <span class="separator">&#124;</span>
     <a id="created_at" class="ord-btn" onclick="sortMovies('created_at')">Date <span class="hidden up-arr">&uarr;</span><span class="hidden dow-arr">&darr;</span></a>
-    {% if active_ordering %}<a class="user-filter-x" href="/">&times;</a>{% endif %}
+    {% if active_ordering %}<a class="user-filter-x" onclick="removeSearchParam('ordering');">&times;</a>{% endif %}
     {% if request.user.is_authenticated %}
     <span class="add-movie-btn"><a href="/add-movie/">New movie</a></span>
     {% endif %}
-    {% if user_filter %}<span class="user-filter">User: {{ user_filter }}</span><a class="user-filter-x" href="/">&times;</a>{% endif %}
+    {% if user_filter %}<span class="user-filter">User: {{ user_filter }}</span><a class="user-filter-x" onclick="removeSearchParam('u');">&times;</a>{% endif %}
 </div>
 {% if page_obj.paginator.num_pages > 1 %}
 <div class="center">
