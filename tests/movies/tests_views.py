@@ -162,7 +162,7 @@ class MovieAddPageViewTestCase(TestCase):
                                         follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Movie.objects.filter(title='A movie').count(), 1)
+        self.assertEqual(Movie.objects.filter(title='A Movie').count(), 1)
 
 
 class MovieVoteViewTestCase(TestCase):

@@ -35,3 +35,10 @@ class MovieModelTestCase(TestCase):
 
         self.assertEqual(movie.total_hates, 1)
         self.assertEqual(movie.total_likes, 0)
+
+    def test_title(self):
+        """ Validates the saved movie title. """
+        user = User.objects.create(username='user', password='test')
+        movie = Movie.objects.create(title='i AM A new MOvie', description='A cool movie to watch.', user_id=user.pk)
+
+        self.assertEqual(movie.title, 'I Am A New Movie')

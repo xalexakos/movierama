@@ -15,6 +15,15 @@ class Movie(models.Model):
     def __str__(self):
         return '%s' % self.title
 
+    def save(self, *args, **kwargs):
+        """
+        Intervene to the users title format.
+        Each word should be saved with the first letter in uppercase and the rest in lowercase.
+        """
+        self.title = u' '.join([word.capitalize() for word in self.title.split()])
+
+        super(Movie, self).save(*args, **kwargs)
+
     @property
     def total_likes(self):
         if hasattr(self, 'likes'):
