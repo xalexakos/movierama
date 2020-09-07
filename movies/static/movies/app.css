@@ -46,7 +46,7 @@ body {
     overflow: hidden;
 }
 
-.add-movie-btn a {
+a.add-movie-btn {
     float: right;
     padding-right: 50px;
     color: black;

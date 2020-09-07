@@ -17,7 +17,7 @@
     <a id="created_at" class="ord-btn" onclick="sortMovies('created_at')">Date <span class="hidden up-arr">&uarr;</span><span class="hidden dow-arr">&darr;</span></a>
     {% if active_ordering %}<a class="user-filter-x" onclick="removeSearchParam('ordering');">&times;</a>{% endif %}
     {% if request.user.is_authenticated %}
-    <span class="add-movie-btn"><a href="/add-movie/">New movie</a></span>
+    <a class="add-movie-btn" href="/add-movie/">New movie</a>
     {% endif %}
     {% if user_filter %}<span class="user-filter">User: {{ user_filter }}</span><a class="user-filter-x" onclick="removeSearchParam('u');">&times;</a>{% endif %}
 </div>
