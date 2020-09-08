@@ -10,9 +10,9 @@ Install python (preferably v3.8).
 Navigate to the projects root directory (movierama).
 
 Create and activate a python virtual environment.
-> python3 -m venv quizgame-env
+> python3 -m venv venv
 
-> source quizgame-env/bin/activate
+> source venv/bin/activate
 
 Install the project's requirements.
 
