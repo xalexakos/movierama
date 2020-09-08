@@ -21,17 +21,17 @@ Install the project's requirements.
 #
 For convenience the default django sqlite3 database has been user. This database requires no installation, 
 just migrate the models by typing
-> python manage.py migrate
+> python3 manage.py migrate
 
 In order to create some additional data you can execute the following command inside project's root directory.
-> python manage.py initialdatagenerator
+> python3 manage.py initialdatagenerator
 
 More information about how the data are generated you can find by navigating to 
 > movies/management/commands/initialdatagenerator.py
 
 # 
 Start django server by typing
-> python manage.py runserver
+> python3 manage.py runserver
 
 Access the application by typing the following url in any browser, create an account and start submitting your 
 favorite movies..
@@ -40,4 +40,4 @@ favorite movies..
 
 ## Tests 
 25 tests are included in order to validate some basic functionality. To execute the tests type:
-> python manage.py test
+> python3 manage.py test
